@@ -15,8 +15,8 @@ class Grid:
     def __init__(self, width: int = -1, height: int = -1):
         self.width = width if width > 0 else 19
         self.height = height if height > 0 else 19
-        self._data: List[List[int]] = [[0] * MAX_WIDTH for _ in range(MAX_HEIGHT)]
-        self.clear()
+        # Allocate only the needed size, not the maximum
+        self._data: List[List[int]] = [[0] * self.width for _ in range(self.height)]
     
     def __getitem__(self, key):
         """Access grid by [y][x] or [Point]."""
@@ -318,8 +318,7 @@ class Grid:
     
     def get_neighbors(self, pt: Point, output: Vec):
         """Get all valid neighboring points."""
-        output.size = 0
-        output.points = []
+        output.clear()
         if pt.x > 0:
             output.push(Point(pt.x - 1, pt.y))
         if pt.x + 1 < self.width:
@@ -331,8 +330,7 @@ class Grid:
     
     def get_corner_points(self, pt: Point, output: Vec):
         """Get all valid diagonal corner points."""
-        output.size = 0
-        output.points = []
+        output.clear()
         if pt.x > 0 and pt.y > 0:
             output.push(Point(pt.x - 1, pt.y - 1))
         if pt.x + 1 < self.width and pt.y > 0:

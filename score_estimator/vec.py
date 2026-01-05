@@ -24,6 +24,8 @@ class Vec:
     
     def remove(self, idx: int) -> Point:
         """Remove and return the point at the given index."""
+        if idx < 0 or idx >= self.size:
+            raise IndexError(f"Index {idx} out of range for Vec of size {self.size}")
         ret = self.points[idx]
         self.points[idx] = self.points[self.size - 1]
         self.points.pop()
@@ -35,6 +37,11 @@ class Vec:
         for i in range(other.size):
             self.push(other[i])
         return self
+    
+    def clear(self):
+        """Clear all points from the vector."""
+        self.points = []
+        self.size = 0
     
     def __len__(self) -> int:
         return self.size

@@ -77,7 +77,7 @@ class Goban:
         seki = self.scan_for_seki(num_iterations, 0.2, seki_pass)
         
         # Horseshoe bias
-        horseshoe_bias = Grid()
+        horseshoe_bias = Grid(self.width, self.height)
         for y in range(self.height):
             for x in range(self.width):
                 p = Point(x, y)
@@ -92,13 +92,13 @@ class Goban:
         horseshoe_bias *= self.board
         horseshoe_bias *= int(num_iterations * (tolerance / 4))
         
-        ret = Grid()
-        pass1 = Grid()
+        ret = Grid(self.width, self.height)
+        pass1 = Grid(self.width, self.height)
         tolerance_scale = 1
         
         tolerance *= tolerance_scale
         
-        bias = Grid()
+        bias = Grid(self.width, self.height)
         territory_map = self.compute_territory()
         group_map = self.compute_group_map()
         liberty_map = self.compute_liberties(group_map)
@@ -150,8 +150,8 @@ class Goban:
     def scan_for_seki(self, num_iterations: int, tolerance: float, 
                       rollout_pass: Grid) -> Grid:
         """Look for probable seki situations."""
-        seki = Grid()
-        visited = Grid()
+        seki = Grid(self.width, self.height)
+        visited = Grid(self.width, self.height)
         
         for y in range(self.height):
             for x in range(self.width):
@@ -214,11 +214,11 @@ class Goban:
             Grid with accumulated scores from all rollouts
         """
         if life_map is None:
-            life_map = Grid()
+            life_map = Grid(self.width, self.height)
         if bias is None:
-            bias = Grid()
+            bias = Grid(self.width, self.height)
         if seki is None:
-            seki = Grid()
+            seki = Grid(self.width, self.height)
         
         ret = Grid(self.width, self.height)
         for y in range(self.height):
@@ -414,7 +414,7 @@ class Goban:
                 if rollout_pass[p] > num_iterations * tolerance:
                     if self.board[p] == -1:  # Should be black but was white
                         removed.push(p)
-                elif rollout_pass[y][x] < num_iterations * -tolerance:
+                elif rollout_pass[p] < num_iterations * -tolerance:
                     if self.board[p] == 1:  # Should be white but was black
                         removed.push(p)
                 else:
@@ -538,8 +538,7 @@ class Goban:
                         break
                     passed = True
                     possible_moves += illegal_moves
-                    illegal_moves.size = 0
-                    illegal_moves.points = []
+                    illegal_moves.clear()
                     player_to_move = -player_to_move
                 continue
             
@@ -549,8 +548,7 @@ class Goban:
                 possible_moves.remove(move_idx)
                 player_to_move = -player_to_move
                 possible_moves += illegal_moves
-                illegal_moves.size = 0
-                illegal_moves.points = []
+                illegal_moves.clear()
                 continue
             elif result == self.ILLEGAL:
                 illegal_moves.push(possible_moves.remove(move_idx))
@@ -560,8 +558,7 @@ class Goban:
                         break
                     passed = True
                     possible_moves += illegal_moves
-                    illegal_moves.size = 0
-                    illegal_moves.points = []
+                    illegal_moves.clear()
                     player_to_move = -player_to_move
                 
                 continue
@@ -656,7 +653,7 @@ class Goban:
     
     def remove_group(self, move: Point, possible_moves: Vec) -> int:
         """Remove a captured group."""
-        visited = Grid()
+        visited = Grid(self.width, self.height)
         tocheck = Vec()
         neighbors = Vec()
         n_removed = 0
