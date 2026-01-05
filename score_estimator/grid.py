@@ -8,13 +8,24 @@ from .vec import Vec
 MAX_WIDTH = 25
 MAX_HEIGHT = 25
 
+# Global default grid size (matches C++ implementation)
+_default_grid_width = 19
+_default_grid_height = 19
+
+
+def set_default_grid_size(width: int, height: int):
+    """Set the default grid size for new grids."""
+    global _default_grid_width, _default_grid_height
+    _default_grid_width = width
+    _default_grid_height = height
+
 
 class Grid:
     """A 2D grid used for various purposes while tracking game and estimation state."""
     
     def __init__(self, width: int = -1, height: int = -1):
-        self.width = width if width > 0 else 19
-        self.height = height if height > 0 else 19
+        self.width = width if width > 0 else _default_grid_width
+        self.height = height if height > 0 else _default_grid_height
         # Allocate only the needed size, not the maximum
         self._data: List[List[int]] = [[0] * self.width for _ in range(self.height)]
     

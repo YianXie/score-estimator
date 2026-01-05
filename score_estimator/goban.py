@@ -5,7 +5,7 @@ from typing import Tuple
 from .color import Color, EMPTY, BLACK, WHITE
 from .point import Point
 from .vec import Vec
-from .grid import Grid
+from .grid import Grid, set_default_grid_size
 
 
 class Goban:
@@ -22,6 +22,8 @@ class Goban:
     def __init__(self, width: int, height: int):
         self.width = width
         self.height = height
+        # Set the default grid size for this board (matches C++ behavior)
+        set_default_grid_size(width, height)
         self.board = Grid(width, height)
         self.do_ko_check = 0
         self.possible_ko = Point(-1, -1)
@@ -45,6 +47,7 @@ class Goban:
         """Set the board size."""
         self.width = width
         self.height = height
+        set_default_grid_size(width, height)
         self.board.width = width
         self.board.height = height
         self.global_visited.width = width

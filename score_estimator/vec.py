@@ -24,6 +24,8 @@ class Vec:
     
     def remove(self, idx: int) -> Point:
         """Remove and return the point at the given index."""
+        if self.size == 0:
+            raise IndexError("Cannot remove from empty Vec")
         if idx < 0 or idx >= self.size:
             raise IndexError(f"Index {idx} out of range for Vec of size {self.size}")
         ret = self.points[idx]
